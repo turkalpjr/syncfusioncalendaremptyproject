@@ -2,11 +2,12 @@ import { ScheduleComponent, ViewsDirective, ViewDirective, Day, Week, WorkWeek, 
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { useState, useEffect } from 'react';
 import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
-
+import { useRef } from 'react';
 
 
 
 export const Scheduler = () => {
+    const scheduleObj1 = useRef(null);
     const PropertyPane = (props) => <div className="mt-5">{props.children}</div>;
     const [scheduleObj, setScheduleObj] = useState();
 
@@ -21,13 +22,33 @@ export const Scheduler = () => {
     };
     const Statuses = [30, 3];
 
+    let statusTypes = document.querySelectorAll('.statusType:not(.click)');
+    let statusList = [];
+    if (statusTypes) {
+        for (var i = 0; i < statusTypes.length; i++) {
+            statusList.push(statusTypes[i].getAttribute("radio-value"));
+        }
+    }
+    debugger;
+
+
     let queryString = '&Statusesstr=' + JSON.stringify(Statuses);
+
+    var Token = "";
+
+    var url = window.location.search.substring(1); //get rid of "?" in querystring
+    var qArray = url.split('&'); //get key-value pairs
+    for (var i = 0; i < qArray.length; i++) {
+        var pArr = qArray[i].split('='); //split key and value
+        if (pArr[0] == "Token")
+            Token = pArr[1]; //return value
+    }
 
 
     const dataManger = new DataManager({
-        url: 'https://localhost:44342/api/calendar/eventsforscheduler?All=true' + queryString,
+        url: 'https://localhost:44342/api/calendar/eventsforscheduler?Allstr=true' + queryString,
         adaptor: new ODataV4Adaptor(),
-        headers: [{ 'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyNSIsInVuaXF1ZV9uYW1lIjoiU8O8bGV5bWFuICBEw7x6Z8O8biIsInJvbGUiOiJTYWxlc01hbmFnZXIiLCJuYmYiOjE2ODg3MzE4OTMsImV4cCI6MTY4OTE2Mzg5MywiaWF0IjoxNjg4NzMxODkzfQ.uNf5_pqHknumT_Tz0aAEBoCU3JBIPjxxeZJkGzK6Apz78jZa3eCJ2bL3UuPs596FOBkO4UELwQY-qcwN83ImrA' }]
+        headers: [{ 'Authorization': 'Bearer ' + Token }]
     });
 
 
@@ -38,7 +59,7 @@ export const Scheduler = () => {
     const onDataBinding = (e) => {
         let items = e.result;
         let scheduleData = [];
-        debugger;
+
         if (items.length > 0) {
             for (let i = 0; i < items.length; i++) {
                 scheduleData.push({
@@ -55,17 +76,21 @@ export const Scheduler = () => {
     }
 
     const onCreated = () => {
-        debugger;
+
     }
     const onDestroyed = () => {
-        debugger;
+
     }
 
+    const RefreshWeaseCalendar = () => {
+        scheduleObj1.current.refreshTemplates();
+    }
 
     return (
 
         <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
-            <ScheduleComponent id="WeaseSchedulerId"
+            <button id="RefreshReactCalenderButtonId" style={{ display: "block" }} onClick={RefreshWeaseCalendar} type="button" className="btn btn-primary">REFRESH BUTTON</button>
+            <ScheduleComponent id="WeaseSchedulerId" ref={scheduleObj1}
                 width='100%' height='550px' currentView='Month' eventSettings={eventSettings} created={onCreated} destroyed={onDestroyed} dataBinding={onDataBinding}
                 dragStart={onDragStart}
             >
