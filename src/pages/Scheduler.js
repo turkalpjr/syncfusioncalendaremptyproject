@@ -11,7 +11,9 @@ import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
 
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const Scheduler = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -76,7 +78,6 @@ export const Scheduler = () => {
         instance.get('')
             .then(response => {
                 var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
-                debugger;
                 schObj.eventSettings.dataSource = response.data;
             })
     }
@@ -155,12 +156,23 @@ export const Scheduler = () => {
                             </TextField>
                         </Grid>
                         <Grid item={true} md={4}>
-                            event date
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker slotProps={{ textField: { size: 'small' } }}
+                                    label="Event Date"
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item={true} md={4}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker slotProps={{ textField: { size: 'small' } }}
+                                    label="Reminder"
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item={true} md={8}>
+                            <TextField fullWidth variant="outlined" size="small" label="Content" />
                         </Grid>
                     </Grid>
-                    <DialogContentText>
-                        hangisi?
-                    </DialogContentText>
                     <DialogActions>
                         <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="error">Cancel</Button>
                         <Button size="small" startIcon={<SaveIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="success">Save</Button>
