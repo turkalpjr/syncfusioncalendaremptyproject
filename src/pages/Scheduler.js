@@ -11,6 +11,7 @@ import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
 
+
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -154,15 +155,22 @@ export const Scheduler = () => {
 
     const saveNewWeaseReactRecord = (object) => {
         object.preventDefault();
-        debugger;
-        var form = document.querySelector('form');
-        var data = new FormData(form);
+        // var form = document.querySelector('form');
+        // var data = new FormData(form);
+        //   var serialize = require('form-serialize');
+        ///  var dataserialized = serialize(form);
+        var SaveObject = {
+            EventTitleId: document.getElementById("WeaseCalendarEventTitleId").value,
+            EventTypeId: document.getElementById("WeaseCalendarEventTypeId").value,
+            EventDateId: document.getElementById("WeaseCalendarEventDateId").value,
+            ReminderDateId: document.getElementById("WeaseCalendarReminderDateId").value,
+            ContentId: document.getElementById("WeaseCalendarContentId").value,
+        };
         var token = ReturnToken();
-
         axios({
             method: "post",
             url: "https://localhost:44342/api/calendar/addnewschedulerrecord",
-            data: data,
+            data: SaveObject,
             headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
         })
             .then(function (response) {
@@ -187,11 +195,11 @@ export const Scheduler = () => {
                     <Box component="form" id="NewWeaseReactRecordFormId" onSubmit={saveNewWeaseReactRecord} >
                         <Grid container display="flex" spacing={1} >
                             <Grid item={true} md={4}>
-                                <TextField name='EventTitleId' id='EventTitleId' variant="outlined" size="small" label="Event Title" />
+                                <TextField name='WeaseCalendarEventTitleId' id='WeaseCalendarEventTitleId' variant="outlined" size="small" label="Event Title" />
                             </Grid>
                             <Grid item={true} md={4}>
                                 <TextField
-                                    size="small" name="EventTypeId" id="EventTypeId"
+                                    size="small" name="WeaseCalendarEventTypeId" id="WeaseCalendarEventTypeId"
                                     label="Event Type" select fullWidth value={eventType} onChange={(e) => setEventType(e.target.value)}>
                                     <MenuItem value="reminder">Reminder</MenuItem>
                                     <MenuItem value="birthday">Birthday</MenuItem>
@@ -200,20 +208,20 @@ export const Scheduler = () => {
                             </Grid>
                             <Grid item={true} md={4}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker name="EventDateId" id="EventDateId" slotProps={{ textField: { size: 'small' } }}
+                                    <DatePicker name="WeaseCalendarEventDateId" id="WeaseCalendarEventDateId" slotProps={{ textField: { size: 'small' } }}
                                         label="Event Date"
                                     />
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item={true} md={4}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker name="ReminderDateId" id="ReminderDateId" slotProps={{ textField: { size: 'small' } }}
+                                    <DatePicker name="WeaseCalendarReminderDateId" id="WeaseCalendarReminderDateId" slotProps={{ textField: { size: 'small' } }}
                                         label="Reminder"
                                     />
                                 </LocalizationProvider>
                             </Grid>
                             <Grid item={true} md={8}>
-                                <TextField name="ContentId" id="ContentId" fullWidth variant="outlined" size="small" label="Content" />
+                                <TextField name="WeaseCalendarContentId" id="WeaseCalendarContentId" fullWidth variant="outlined" size="small" label="Content" />
                             </Grid>
                         </Grid>
 
