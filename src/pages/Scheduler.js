@@ -1,19 +1,24 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { ScheduleComponent, ViewsDirective, ViewDirective, Day, Week, WorkWeek, Month, Agenda, Inject, Resize, DragAndDrop } from '@syncfusion/ej2-react-schedule';
-import { Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
+import { Dialog, DialogContent, DialogContentText, DialogActions, DialogTitle, Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
 
+
+
 export const Scheduler = () => {
+    const [dialogOpen, setDialogOpen] = useState(false)
     const handleStatusChange = (event) => {
         setLeadStatus(event.target.value);
     };
-
+    const [eventType, setEventType] = useState('')
     const [leadStatuses, setLeadStatuses] = useState([]);
     const [leadStatus, setLeadStatus] = useState([]);
     const [operationType, setOperationType] = useState([])
@@ -124,9 +129,44 @@ export const Scheduler = () => {
     }
     useEffect(() => {
     }, []);
+
+    const handleDialogClose = (e) => {
+
+    };
+    const handleBackdropClick = () => {
+        return false;
+    };
     return (
         <>
-
+            <Dialog onBackdropClick={handleBackdropClick} open={dialogOpen} onClose={handleDialogClose}>
+                <DialogTitle>Add new record..</DialogTitle>
+                <DialogContent>
+                    <Grid container display="flex" spacing={1} >
+                        <Grid item={true} md={4}>
+                            <TextField variant="outlined" size="small" label="Event Title" />
+                        </Grid>
+                        <Grid item={true} md={4}>
+                            <TextField
+                                size="small"
+                                label="Event Type" select fullWidth value={eventType} onChange={(e) => setEventType(e.target.value)}>
+                                <MenuItem value="reminder">Reminder</MenuItem>
+                                <MenuItem value="birthday">Birthday</MenuItem>
+                                <MenuItem value="meeting">Meeting</MenuItem>
+                            </TextField>
+                        </Grid>
+                        <Grid item={true} md={4}>
+                            event date
+                        </Grid>
+                    </Grid>
+                    <DialogContentText>
+                        hangisi?
+                    </DialogContentText>
+                    <DialogActions>
+                        <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="error">Cancel</Button>
+                        <Button size="small" startIcon={<SaveIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="success">Save</Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
             <Grid container display="flex" spacing={1} >
                 <Grid item={true} md={12}> <Box><TextField
                     inputProps={{
@@ -164,7 +204,7 @@ export const Scheduler = () => {
                     </Box >
                 </Grid>
 
-                <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button color="success" size="small" variant='contained' startIcon={<AddIcon />}> Add Record</Button></Box>      </Grid>
+                <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button onClick={() => setDialogOpen(true)} color="success" size="small" variant='contained' startIcon={<AddIcon />}> Add Record</Button></Box>      </Grid>
 
                 <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button onClick={updateFilters} size="small" variant='contained' startIcon={<RefreshIcon />}> Refresh Calendar</Button></Box>      </Grid>
 
