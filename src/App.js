@@ -1,4 +1,4 @@
-import { Scheduler2 } from "./pages/Scheduler2";
+import { Scheduler } from "./pages/Scheduler";
 import React from 'react';
 import './App.css';
 
@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Scheduler2 />
+        {/* <Scheduler /> */}
       </header>
     </div >
   );
