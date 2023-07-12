@@ -3,17 +3,20 @@ import { useState, useEffect } from 'react';
 import { ScheduleComponent, ViewsDirective, ViewDirective, Day, Week, WorkWeek, Month, Agenda, Inject, Resize, DragAndDrop } from '@syncfusion/ej2-react-schedule';
 import { Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import AddIcon from '@mui/icons-material/Add';
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
-
 import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
 
 export const Scheduler = () => {
-    let _scheduleData = [];
-    const [country, setCountry] = useState([]);
-    const StatusesDs = [];
-    const [_selectedLeadStatuses, setSelected] = useState([]);
+    const handleStatusChange = (event) => {
+        setLeadStatus(event.target.value);
+    };
+
+    const [leadStatuses, setLeadStatuses] = useState([]);
+    const [leadStatus, setLeadStatus] = useState([]);
+    const [operationType, setOperationType] = useState([])
     const PropertyPane = (props) => <div className="mt-5">{props.children}</div>;
     const formatDate = (d) => {
         var dd = d.getDate();
@@ -44,10 +47,7 @@ export const Scheduler = () => {
         });
         instance.get('')
             .then(response => {
-                for (var i = 0; i < response.data.length; i++) {
-                    var statusItem = { label: response.data[i].name, value: response.data[i].id };
-                    StatusesDs.push(statusItem);
-                }
+                setLeadStatuses(response.data);
             })
     }
 
@@ -71,31 +71,11 @@ export const Scheduler = () => {
         instance.get('')
             .then(response => {
                 var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
+                debugger;
                 schObj.eventSettings.dataSource = response.data;
             })
     }
 
-
-    const [calRef, setCalRef] = useState(); // calendar ref 
-    const [filters, setFilters] = useState(_scheduleData);
-    const [data, setScheduleData] = useState(filters);
-    useEffect(() => {
-        if (data && calRef) {
-            // this is executed every time data changed 
-            console.log('data is changed, run refresh, data = ', data);
-
-            calRef.refreshEvents();
-        }
-    }, [data, calRef]);
-    const Statuses = [30, 3];
-
-    let statusTypes = document.querySelectorAll('.statusType:not(.click)');
-    let statusList = [];
-    if (statusTypes) {
-        for (var i = 0; i < statusTypes.length; i++) {
-            statusList.push(statusTypes[i].getAttribute("radio-value"));
-        }
-    }
     const updateFilters = () => {
         FillScheduler();
     };
@@ -128,19 +108,22 @@ export const Scheduler = () => {
 
     }
     const change = (args) => {
-        debugger;
+
         FillScheduler();
     };
 
-    const handleSwitchChange = (checked) => {
-        ///  this.setState({ checked });
-    }
-
     const Schedule_ViewChanged = (e) => {
-        debugger;
-    }
 
+    }
+    let _scheduleData = [];
+    const [filters, setFilters] = useState(_scheduleData);
+    const [data, setScheduleData] = useState(filters);
     const eventSettings = { dataSource: data };
+    const onEventRendered = (args) => {
+        args.element.style.backgroundColor = args.data.CategoryColor;
+    }
+    useEffect(() => {
+    }, []);
     return (
         <>
 
@@ -160,35 +143,36 @@ export const Scheduler = () => {
                             SelectProps={{
                                 multiple: true
                             }}
-                            label="Operation Types" select fullWidth value={country} onChange={(e) => setCountry(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}>
-                            <MenuItem value="TR">TÜRKİYE</MenuItem>
-                            <MenuItem value="USA">ABD</MenuItem>
-                            <MenuItem value="FR">FRANSA</MenuItem>
+                            label="Operation Types" select fullWidth value={operationType} onChange={(e) => setOperationType(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}>
+                            <MenuItem value="operation">Operation</MenuItem>
+                            <MenuItem value="meeting">Meeting</MenuItem>
                         </TextField>
                     </Box >
                 </Grid>
 
-                <Grid item={true} md={2}>
+                <Grid item={true} md={6}>
                     <Box  >
                         <TextField size="small"
                             SelectProps={{
                                 multiple: true
                             }}
-                            label="Statuses" select fullWidth value={country} onChange={(e) => setCountry(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}>
-                            <MenuItem value="TR">TÜRKİYE</MenuItem>
-                            <MenuItem value="USA">ABD</MenuItem>
-                            <MenuItem value="FR">FRANSA</MenuItem>
+                            label="Statuses" select fullWidth value={leadStatus} onChange={handleStatusChange}>
+                            {leadStatuses?.map((data) => (
+                                <MenuItem key={data.id} value={data.id}>{data.name}</MenuItem>
+                            ))}
                         </TextField>
                     </Box >
                 </Grid>
 
-                <Grid item={true} md={8}  > <Box display="flex" justifyContent="flex-end"><Button onClick={updateFilters} size="small" variant='contained' startIcon={<RefreshIcon />}> Refresh Calendar</Button></Box>      </Grid>
+                <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button color="success" size="small" variant='contained' startIcon={<AddIcon />}> Add Record</Button></Box>      </Grid>
+
+                <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button onClick={updateFilters} size="small" variant='contained' startIcon={<RefreshIcon />}> Refresh Calendar</Button></Box>      </Grid>
 
 
                 <Grid item={true} md={12}>
                     <ScheduleComponent id="WeaseSchedulerId"
                         width='100%' height='550px' viewChanged="Schedule_ViewChanged" currentView='Month' eventSettings={eventSettings} created={onCreated} destroyed={onDestroyed} dataBinding={onDataBinding}
-                        dragStart={onDragStart}
+                        dragStart={onDragStart} eventRendered={onEventRendered}
                     >
                         <ViewsDirective>
                             {['Day', 'Week', 'WorkWeek', 'Month', 'Agenda'].map((item) => <ViewDirective key={item} option={item} />)}
@@ -217,11 +201,6 @@ export const Scheduler = () => {
                     </PropertyPane>
                 </Grid >
             </Grid >
-
-
-
-
-
         </>
     )
 }
