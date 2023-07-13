@@ -12,6 +12,9 @@ import { useRef } from 'react';
 import axios from 'axios';
 
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 export const Scheduler = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -76,7 +79,6 @@ export const Scheduler = () => {
         instance.get('')
             .then(response => {
                 var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
-                debugger;
                 schObj.eventSettings.dataSource = response.data;
             })
     }
@@ -128,6 +130,7 @@ export const Scheduler = () => {
         args.element.style.backgroundColor = args.data.CategoryColor;
     }
     useEffect(() => {
+
     }, []);
 
     const handleDialogClose = (e) => {
@@ -136,35 +139,98 @@ export const Scheduler = () => {
     const handleBackdropClick = () => {
         return false;
     };
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        debugger;
+        const user = {
+            name: this.state.name
+        }
+        // axios.post('https://jsonplaceholder.typicode.com/users', { user })
+        //     .then(res => {
+        //         console.log(res);
+        //         console.log(res.data);
+        //         window.location = "/retrieve" //This line of code will redirect you once the submission is succeed
+        //     })
+    }
+
+    const saveNewWeaseReactRecord = (object) => {
+        object.preventDefault();
+        // var form = document.querySelector('form');
+        // var data = new FormData(form);
+        //   var serialize = require('form-serialize');
+        ///  var dataserialized = serialize(form);
+        var SaveObject = {
+            EventTitleId: document.getElementById("WeaseCalendarEventTitleId").value,
+            EventTypeId: document.getElementById("WeaseCalendarEventTypeId").value,
+            EventDateId: document.getElementById("WeaseCalendarEventDateId").value,
+            ReminderDateId: document.getElementById("WeaseCalendarReminderDateId").value,
+            ContentId: document.getElementById("WeaseCalendarContentId").value,
+        };
+        var token = ReturnToken();
+        axios({
+            method: "post",
+            url: "https://localhost:44342/api/calendar/addnewschedulerrecord",
+            data: SaveObject,
+            headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+        })
+            .then(function (response) {
+                //handle success
+                debugger;
+                console.log(response);
+            })
+            .catch(function (response) {
+                //handle error
+                debugger;
+                console.log(response);
+            });
+
+
+
+    }
     return (
         <>
             <Dialog onBackdropClick={handleBackdropClick} open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Add new record..</DialogTitle>
                 <DialogContent>
-                    <Grid container display="flex" spacing={1} >
-                        <Grid item={true} md={4}>
-                            <TextField variant="outlined" size="small" label="Event Title" />
+                    <Box component="form" id="NewWeaseReactRecordFormId" onSubmit={saveNewWeaseReactRecord} >
+                        <Grid container display="flex" spacing={1} >
+                            <Grid item={true} md={4}>
+                                <TextField name='WeaseCalendarEventTitleId' id='WeaseCalendarEventTitleId' variant="outlined" size="small" label="Event Title" />
+                            </Grid>
+                            <Grid item={true} md={4}>
+                                <TextField
+                                    size="small" name="WeaseCalendarEventTypeId" id="WeaseCalendarEventTypeId"
+                                    label="Event Type" select fullWidth value={eventType} onChange={(e) => setEventType(e.target.value)}>
+                                    <MenuItem value="reminder">Reminder</MenuItem>
+                                    <MenuItem value="birthday">Birthday</MenuItem>
+                                    <MenuItem value="meeting">Meeting</MenuItem>
+                                </TextField>
+                            </Grid>
+                            <Grid item={true} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker name="WeaseCalendarEventDateId" id="WeaseCalendarEventDateId" slotProps={{ textField: { size: 'small' } }}
+                                        label="Event Date"
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item={true} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker name="WeaseCalendarReminderDateId" id="WeaseCalendarReminderDateId" slotProps={{ textField: { size: 'small' } }}
+                                        label="Reminder"
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item={true} md={8}>
+                                <TextField name="WeaseCalendarContentId" id="WeaseCalendarContentId" fullWidth variant="outlined" size="small" label="Content" />
+                            </Grid>
                         </Grid>
-                        <Grid item={true} md={4}>
-                            <TextField
-                                size="small"
-                                label="Event Type" select fullWidth value={eventType} onChange={(e) => setEventType(e.target.value)}>
-                                <MenuItem value="reminder">Reminder</MenuItem>
-                                <MenuItem value="birthday">Birthday</MenuItem>
-                                <MenuItem value="meeting">Meeting</MenuItem>
-                            </TextField>
-                        </Grid>
-                        <Grid item={true} md={4}>
-                            event date
-                        </Grid>
-                    </Grid>
-                    <DialogContentText>
-                        hangisi?
-                    </DialogContentText>
-                    <DialogActions>
-                        <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="error">Cancel</Button>
-                        <Button size="small" startIcon={<SaveIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="success">Save</Button>
-                    </DialogActions>
+
+                        <DialogActions>
+                            <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="error">Cancel</Button>
+                            <Button type="submit" size="small" startIcon={<SaveIcon />} variant='contained' color="success"  >Save</Button>
+                        </DialogActions>
+                    </Box>
                 </DialogContent>
             </Dialog>
             <Grid container display="flex" spacing={1} >
