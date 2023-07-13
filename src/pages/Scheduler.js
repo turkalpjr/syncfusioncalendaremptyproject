@@ -130,6 +130,7 @@ export const Scheduler = () => {
         args.element.style.backgroundColor = args.data.CategoryColor;
     }
     useEffect(() => {
+
     }, []);
 
     const handleDialogClose = (e) => {
