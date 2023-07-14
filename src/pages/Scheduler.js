@@ -123,7 +123,6 @@ export const Scheduler = () => {
 
     }
     const change = (args) => {
-
         FillScheduler();
     };
 
@@ -141,6 +140,13 @@ export const Scheduler = () => {
 
     }, []);
 
+    const onActionBegin = (e) => {
+        if (e.requestType == "dateNavigate") {
+            setTimeout(function () {
+                FillScheduler();
+            }, 500);
+        }
+    }
 
     return (
         <>
@@ -193,7 +199,7 @@ export const Scheduler = () => {
 
 
                 <Grid item={true} md={12}>
-                    <ScheduleComponent id="WeaseSchedulerId"
+                    <ScheduleComponent id="WeaseSchedulerId" actionBegin={onActionBegin}
                         width='100%' height='550px' viewChanged="Schedule_ViewChanged" currentView='Month' eventSettings={eventSettings} created={onCreated} destroyed={onDestroyed} dataBinding={onDataBinding}
                         dragStart={onDragStart} eventRendered={onEventRendered}
                     >
