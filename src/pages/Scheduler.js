@@ -8,7 +8,7 @@ import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
-import { useDispatch, useSelector } from "react-redux";
+
 import SchedulerForm from './SchedulerForm';
 export const Scheduler = () => {
     const [dialogOpen, setDialogOpen] = useState(false)

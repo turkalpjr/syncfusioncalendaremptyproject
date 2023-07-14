@@ -28,6 +28,7 @@ const formSlice = createSlice({
         },
     },
     extraReducers(builder) {
+        debugger;
         builder.addCase(addScheduler, (state, action) => {
             state.eventTitleId = '';
             state.eventTypeId = '';
