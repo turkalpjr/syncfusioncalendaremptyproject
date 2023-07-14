@@ -4,7 +4,6 @@ const schedulerSlice = createSlice({
     name: 'form',
     reducers: {
         addScheduler(state, action) {
-            debugger;
             state.data.push({
                 eventTitleId: action.payload.eventTitleId,
                 eventTypeId: action.payload.eventTypeId,

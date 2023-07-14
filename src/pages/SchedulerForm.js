@@ -82,7 +82,7 @@ function SchedulerForm(props) {
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
-                            label="Reminder" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); dispatch(changeReminderDateId(Date1)); }} value={reminderDateId}
+                            label="Reminder" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); dispatch(changeReminderDateId(Date1)); }} selected={reminderDateId}
                         />
                     </LocalizationProvider>
                 </Grid>
