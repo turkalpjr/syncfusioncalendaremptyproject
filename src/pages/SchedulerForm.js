@@ -9,7 +9,8 @@ import { useState, useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CancelIcon from '@mui/icons-material/Cancel';
-function SchedulerForm() {
+import axios from 'axios';
+function SchedulerForm(props) {
 
     const [eventType, setEventType] = useState('')
 
@@ -24,13 +25,38 @@ function SchedulerForm() {
         };
     });
 
+    const saveNewWeaseReactRecord = () => {
+        let SaveObject = {
+            eventTitleId,
+            eventTypeId,
+            eventDateId,
+            reminderDateId,
+            calendarContentId
+        };
+        var token = props.ReturnToken();
+        axios({
+            method: "post",
+            url: "https://localhost:44342/api/calendar/addnewschedulerrecord",
+            data: SaveObject,
+            headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+        })
+            .then(function (response) {
+                //handle success
+                props.setDialogOpen(false)
+                props.FillScheduler();
+            })
+            .catch(function (response) {
+                //handle error
+                props.FillScheduler();
+            });
+    }
     const handleSubmit = (event) => {
-        debugger;
+
         event.preventDefault();
-        dispatch(addScheduler({ eventTitleId, eventTypeId, eventDateId, reminderDateId, calendarContentId }));
+        //    dispatch(addScheduler({ eventTitleId, eventTypeId, eventDateId, reminderDateId, calendarContentId }));
+        saveNewWeaseReactRecord();
     };
 
-    console.log(eventTitleId, eventTypeId, eventDateId, reminderDateId, calendarContentId);
     return (
         <Box component="form" id="NewWeaseReactRecordFormId" onSubmit={handleSubmit} >
             <Grid container display="flex" spacing={1} >
@@ -49,14 +75,14 @@ function SchedulerForm() {
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
-                            label="Event Date" onChange={(newValue) => { dispatch(changeEventDateId(newValue)); }} selected={eventDateId}
+                            label="Event Date" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); dispatch(changeEventDateId(Date1)); }} selected={eventDateId}
                         />
                     </LocalizationProvider>
                 </Grid>
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
-                            label="Reminder" onChange={(newValue) => { dispatch(changeReminderDateId(newValue)); }} value={reminderDateId}
+                            label="Reminder" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); dispatch(changeReminderDateId(Date1)); }} value={reminderDateId}
                         />
                     </LocalizationProvider>
                 </Grid>
@@ -66,9 +92,7 @@ function SchedulerForm() {
             </Grid>
 
             <DialogActions>
-                {/* <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => setDialogOpen(false)}
-                    color="error">Cancel</Button> */}
-                <Button size="small" startIcon={<CancelIcon />} variant='contained'
+                <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => props.setDialogOpen(false)}
                     color="error">Cancel</Button>
                 <Button type="submit" size="small" startIcon={<SaveIcon />} variant='contained' color="success"  >Save</Button>
             </DialogActions>
