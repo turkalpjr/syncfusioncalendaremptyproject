@@ -1,27 +1,26 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { ScheduleComponent, ViewsDirective, ViewDirective, Day, Week, WorkWeek, Month, Agenda, Inject, Resize, DragAndDrop } from '@syncfusion/ej2-react-schedule';
-import { Dialog, DialogContent, DialogContentText, DialogActions, DialogTitle, Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
+import { Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
-
-
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import { useDispatch, useSelector } from "react-redux";
+import SchedulerForm from './SchedulerForm';
 export const Scheduler = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
     const handleStatusChange = (event) => {
         setLeadStatus(event.target.value);
     };
-    const [eventType, setEventType] = useState('')
+    const handleBackdropClick = () => {
+        return false;
+    };
+    const handleDialogClose = (e) => {
+
+    };
     const [leadStatuses, setLeadStatuses] = useState([]);
     const [leadStatus, setLeadStatus] = useState([]);
     const [operationType, setOperationType] = useState([])
@@ -133,12 +132,7 @@ export const Scheduler = () => {
 
     }, []);
 
-    const handleDialogClose = (e) => {
 
-    };
-    const handleBackdropClick = () => {
-        return false;
-    };
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -154,83 +148,47 @@ export const Scheduler = () => {
         //     })
     }
 
-    const saveNewWeaseReactRecord = (object) => {
-        object.preventDefault();
-        // var form = document.querySelector('form');
-        // var data = new FormData(form);
-        //   var serialize = require('form-serialize');
-        ///  var dataserialized = serialize(form);
-        var SaveObject = {
-            EventTitleId: document.getElementById("WeaseCalendarEventTitleId").value,
-            EventTypeId: document.getElementById("WeaseCalendarEventTypeId").value,
-            EventDateId: document.getElementById("WeaseCalendarEventDateId").value,
-            ReminderDateId: document.getElementById("WeaseCalendarReminderDateId").value,
-            ContentId: document.getElementById("WeaseCalendarContentId").value,
-        };
-        var token = ReturnToken();
-        axios({
-            method: "post",
-            url: "https://localhost:44342/api/calendar/addnewschedulerrecord",
-            data: SaveObject,
-            headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
-        })
-            .then(function (response) {
-                //handle success
-                debugger;
-                console.log(response);
-            })
-            .catch(function (response) {
-                //handle error
-                debugger;
-                console.log(response);
-            });
+    // const saveNewWeaseReactRecord = (object) => {
+    //     debugger;
+    //     object.preventDefault();
+    //     // var form = document.querySelector('form');
+    //     // var data = new FormData(form);
+    //     //   var serialize = require('form-serialize');
+    //     ///  var dataserialized = serialize(form);
+    //     var SaveObject = {
+    //         EventTitleId: document.getElementById("WeaseCalendarEventTitleId").value,
+    //         EventTypeId: document.getElementById("WeaseCalendarEventTypeId").value,
+    //         EventDateId: document.getElementById("WeaseCalendarEventDateId").value,
+    //         ReminderDateId: document.getElementById("WeaseCalendarReminderDateId").value,
+    //         ContentId: document.getElementById("WeaseCalendarContentId").value,
+    //     };
+    //     var token = ReturnToken();
+    //     axios({
+    //         method: "post",
+    //         url: "https://localhost:44342/api/calendar/addnewschedulerrecord",
+    //         data: SaveObject,
+    //         headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+    //     })
+    //         .then(function (response) {
+    //             //handle success
+    //             debugger;
+    //             console.log(response);
+    //         })
+    //         .catch(function (response) {
+    //             //handle error
+    //             debugger;
+    //             console.log(response);
+    //         });
 
 
 
-    }
+    // }
     return (
         <>
             <Dialog onBackdropClick={handleBackdropClick} open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Add new record..</DialogTitle>
                 <DialogContent>
-                    <Box component="form" id="NewWeaseReactRecordFormId" onSubmit={saveNewWeaseReactRecord} >
-                        <Grid container display="flex" spacing={1} >
-                            <Grid item={true} md={4}>
-                                <TextField name='WeaseCalendarEventTitleId' id='WeaseCalendarEventTitleId' variant="outlined" size="small" label="Event Title" />
-                            </Grid>
-                            <Grid item={true} md={4}>
-                                <TextField
-                                    size="small" name="WeaseCalendarEventTypeId" id="WeaseCalendarEventTypeId"
-                                    label="Event Type" select fullWidth value={eventType} onChange={(e) => setEventType(e.target.value)}>
-                                    <MenuItem value="reminder">Reminder</MenuItem>
-                                    <MenuItem value="birthday">Birthday</MenuItem>
-                                    <MenuItem value="meeting">Meeting</MenuItem>
-                                </TextField>
-                            </Grid>
-                            <Grid item={true} md={4}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker name="WeaseCalendarEventDateId" id="WeaseCalendarEventDateId" slotProps={{ textField: { size: 'small' } }}
-                                        label="Event Date"
-                                    />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid item={true} md={4}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DatePicker name="WeaseCalendarReminderDateId" id="WeaseCalendarReminderDateId" slotProps={{ textField: { size: 'small' } }}
-                                        label="Reminder"
-                                    />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid item={true} md={8}>
-                                <TextField name="WeaseCalendarContentId" id="WeaseCalendarContentId" fullWidth variant="outlined" size="small" label="Content" />
-                            </Grid>
-                        </Grid>
-
-                        <DialogActions>
-                            <Button size="small" startIcon={<CancelIcon />} variant='contained' onClick={() => setDialogOpen(false)} color="error">Cancel</Button>
-                            <Button type="submit" size="small" startIcon={<SaveIcon />} variant='contained' color="success"  >Save</Button>
-                        </DialogActions>
-                    </Box>
+                    <SchedulerForm />
                 </DialogContent>
             </Dialog>
             <Grid container display="flex" spacing={1} >
