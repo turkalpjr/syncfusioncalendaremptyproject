@@ -199,7 +199,7 @@ export const Scheduler = () => {
 
 
                 <Grid item={true} md={12}>
-                    <ScheduleComponent id="WeaseSchedulerId" actionBegin={onActionBegin}
+                    <ScheduleComponent id="WeaseSchedulerId" actionBegin={onActionBegin} firstDayOfWeek={1}
                         width='100%' height='550px' viewChanged="Schedule_ViewChanged" currentView='Month' eventSettings={eventSettings} created={onCreated} destroyed={onDestroyed} dataBinding={onDataBinding}
                         dragStart={onDragStart} eventRendered={onEventRendered}
                     >
