@@ -34,6 +34,14 @@ export const Scheduler = () => {
         return d = yyyy + '-' + mm + '-' + dd;
     }
 
+    const formatDate2 = (d) => {
+        var dd = d.getDate();
+        var mm = d.getMonth() + 1;
+        var yyyy = d.getFullYear();
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm };
+        return d = dd + '-' + mm + '-' + yyyy;
+    }
     const ReturnToken = () => {
         var Token = "";
         var url = window.location.search.substring(1); //get rid of "?" in querystring
@@ -107,8 +115,9 @@ export const Scheduler = () => {
         e.result = scheduleData;
     }
 
-    const onCreated = () => {
 
+    const onCreated = () => {
+        FillScheduler();
     }
     const onDestroyed = () => {
 
@@ -133,62 +142,12 @@ export const Scheduler = () => {
     }, []);
 
 
-
-    const handleSubmit = event => {
-        event.preventDefault();
-        debugger;
-        const user = {
-            name: this.state.name
-        }
-        // axios.post('https://jsonplaceholder.typicode.com/users', { user })
-        //     .then(res => {
-        //         console.log(res);
-        //         console.log(res.data);
-        //         window.location = "/retrieve" //This line of code will redirect you once the submission is succeed
-        //     })
-    }
-
-    // const saveNewWeaseReactRecord = (object) => {
-    //     debugger;
-    //     object.preventDefault();
-    //     // var form = document.querySelector('form');
-    //     // var data = new FormData(form);
-    //     //   var serialize = require('form-serialize');
-    //     ///  var dataserialized = serialize(form);
-    //     var SaveObject = {
-    //         EventTitleId: document.getElementById("WeaseCalendarEventTitleId").value,
-    //         EventTypeId: document.getElementById("WeaseCalendarEventTypeId").value,
-    //         EventDateId: document.getElementById("WeaseCalendarEventDateId").value,
-    //         ReminderDateId: document.getElementById("WeaseCalendarReminderDateId").value,
-    //         ContentId: document.getElementById("WeaseCalendarContentId").value,
-    //     };
-    //     var token = ReturnToken();
-    //     axios({
-    //         method: "post",
-    //         url: "https://localhost:44342/api/calendar/addnewschedulerrecord",
-    //         data: SaveObject,
-    //         headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
-    //     })
-    //         .then(function (response) {
-    //             //handle success
-    //             debugger;
-    //             console.log(response);
-    //         })
-    //         .catch(function (response) {
-    //             //handle error
-    //             debugger;
-    //             console.log(response);
-    //         });
-
-
-
-    // }
     return (
         <>
             <Dialog onBackdropClick={handleBackdropClick} open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Add new record..</DialogTitle>
                 <DialogContent>
-                    <SchedulerForm />
+                    <SchedulerForm ReturnToken={ReturnToken} formatDate2={formatDate2} FillScheduler={FillScheduler} setDialogOpen={setDialogOpen} />
                 </DialogContent>
             </Dialog>
             <Grid container display="flex" spacing={1} >
