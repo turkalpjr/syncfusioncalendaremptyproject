@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const schedulerSlice = createSlice({
+const schedulerNewRecordSlice = createSlice({
     name: 'form',
     reducers: {
         addScheduler(state, action) {
@@ -15,5 +15,5 @@ const schedulerSlice = createSlice({
     },
 });
 
-export const { addScheduler } = schedulerSlice.actions;
-export const schedulerReducer = schedulerSlice.reducer;
+export const { addScheduler } = schedulerNewRecordSlice.actions;
+export const schedulerReducer = schedulerNewRecordSlice.reducer;

@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { changeEventTitleId, changeEventTypeId, changeEventDateId, changeReminderDateId, changeCalendarContentId } from '../store/slices/formSlice';
 import SaveIcon from '@mui/icons-material/Save';
-import { addScheduler } from '../store/slices/schedulerSlice';
+import { addScheduler } from '../store/slices/schedulerNewRecordSlice';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dialog, DialogContent, DialogContentText, DialogActions, DialogTitle, Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
 import { useState, useEffect } from 'react';
