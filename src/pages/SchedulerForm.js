@@ -51,9 +51,7 @@ function SchedulerForm(props) {
             });
     }
     const handleSubmit = (event) => {
-
         event.preventDefault();
-        //    dispatch(addScheduler({ eventTitleId, eventTypeId, eventDateId, reminderDateId, calendarContentId }));
         saveNewWeaseReactRecord();
     };
 
