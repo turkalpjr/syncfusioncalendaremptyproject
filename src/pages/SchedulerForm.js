@@ -48,14 +48,14 @@ function SchedulerForm() {
                 </Grid>
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker slotProps={{ textField: { size: 'small' } }}
+                        <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
                             label="Event Date" onChange={(newValue) => { dispatch(changeEventDateId(newValue)); }} selected={eventDateId}
                         />
                     </LocalizationProvider>
                 </Grid>
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker slotProps={{ textField: { size: 'small' } }}
+                        <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
                             label="Reminder" onChange={(newValue) => { dispatch(changeReminderDateId(newValue)); }} value={reminderDateId}
                         />
                     </LocalizationProvider>
