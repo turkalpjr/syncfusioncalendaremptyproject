@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { addScheduler } from './schedulerSlice';
+import { addScheduler } from './schedulerNewRecordSlice';
 
 const formSlice = createSlice({
     name: 'form',
