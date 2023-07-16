@@ -3,8 +3,16 @@ import React from 'react'
 import { changeSearchTextId, changeOperationTypesId, changeStatusesId } from '../store/slices/schedulerFilterParamsSlice';
 import AddIcon from '@mui/icons-material/Add';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
+import axios from 'axios';
 function SchedulerFilterForm(props) {
+    const formatDate = (d) => {
+        var dd = d.getDate();
+        var mm = d.getMonth() + 1;
+        var yyyy = d.getFullYear();
+        if (dd < 10) { dd = '0' + dd }
+        if (mm < 10) { mm = '0' + mm };
+        return d = yyyy + '-' + mm + '-' + dd;
+    }
     const [operationType, setOperationType] = props.useState([])
     const [leadStatus, setLeadStatus] = props.useState([]);
     const handleStatusChange = (event) => {
@@ -21,13 +29,46 @@ function SchedulerFilterForm(props) {
     const handleSchedulerFilterSubmit = (e) => {
         e.preventDefault();
         debugger;
-        let SearchFilterObject = {
-            searchTextId,
-            operationTypesId,
-            statusesId
-        };
-        var token = props.ReturnToken();
+        let QueryString = "";
+        if (searchTextId != "") {
+            QueryString += "?searchTextId=" + searchTextId;
+        }
 
+        if (operationTypesId.length > 0) {
+            if (QueryString != "") {
+                QueryString += "&operationTypesId="
+            } else {
+                QueryString += "?operationTypesId=";
+            }
+            QueryString += JSON.stringify(operationTypesId);
+        }
+        if (statusesId.length > 0) {
+            if (QueryString != "") {
+                QueryString += "&statusesId="
+            } else {
+                QueryString += "?statusesId=";
+            }
+            QueryString += JSON.stringify(statusesId);
+        }
+        var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
+        var currentViewDates = schObj.getCurrentViewDates();
+        var Start = formatDate(currentViewDates[0]);
+        var End = formatDate(currentViewDates[currentViewDates.length - 1]);
+        QueryString += "?Start=" + Start + "&End=" + End;
+        var token = props.ReturnToken();
+        axios({
+            method: "get",
+            url: "https://localhost:44342/api/calendar/eventsforscheduler" + QueryString,
+            headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+        })
+            .then(function (response) {
+                debugger;
+                var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
+                schObj.eventSettings.dataSource = response.data;
+            })
+            .catch(function (response) {
+
+            });
     }
 
     return (
