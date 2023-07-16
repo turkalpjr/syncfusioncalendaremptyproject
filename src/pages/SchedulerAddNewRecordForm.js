@@ -1,21 +1,19 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux';
+
 import { changeEventTitleId, changeEventTypeId, changeEventDateId, changeReminderDateId, changeCalendarContentId } from '../store/slices/formSlice';
 import SaveIcon from '@mui/icons-material/Save';
 import { addScheduler } from '../store/slices/schedulerNewRecordSlice';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dialog, DialogContent, DialogContentText, DialogActions, DialogTitle, Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
-import { useState, useEffect } from 'react';
+
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from 'axios';
-function SchedulerForm(props) {
+function SchedulerAddNewRecordForm(props) {
 
-    const [eventType, setEventType] = useState('')
 
-    const dispatch = useDispatch()
-    const { eventTitleId, eventTypeId, eventDateId, reminderDateId, calendarContentId } = useSelector((state) => {
+    const { eventTitleId, eventTypeId, eventDateId, reminderDateId, calendarContentId } = props.useSelector((state) => {
         return {
             eventTitleId: state.form.eventTitleId,
             eventTypeId: state.form.eventTypeId,
@@ -50,21 +48,21 @@ function SchedulerForm(props) {
                 props.FillScheduler();
             });
     }
-    const handleSubmit = (event) => {
+    const handleNewSchedulerRecordSubmit = (event) => {
         event.preventDefault();
         saveNewWeaseReactRecord();
     };
 
     return (
-        <Box component="form" id="NewWeaseReactRecordFormId" onSubmit={handleSubmit} >
+        <Box component="form" onSubmit={handleNewSchedulerRecordSubmit} >
             <Grid container display="flex" spacing={1} >
                 <Grid item={true} md={4}>
-                    <TextField variant="outlined" size="small" label="Event Title" onChange={(event) => { dispatch(changeEventTitleId(event.target.value)); }} value={eventTitleId} />
+                    <TextField variant="outlined" size="small" label="Event Title" onChange={(event) => { props.dispatch(changeEventTitleId(event.target.value)); }} value={eventTitleId} />
                 </Grid>
                 <Grid item={true} md={4}>
                     <TextField
                         size="small"
-                        label="Event Type" select fullWidth onChange={(event) => { dispatch(changeEventTypeId(event.target.value)); }} value={eventTypeId}>
+                        label="Event Type" select fullWidth onChange={(event) => { props.dispatch(changeEventTypeId(event.target.value)); }} value={eventTypeId}>
                         <MenuItem value="reminder">Reminder</MenuItem>
                         <MenuItem value="birthday">Birthday</MenuItem>
                         <MenuItem value="meeting">Meeting</MenuItem>
@@ -73,19 +71,19 @@ function SchedulerForm(props) {
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
-                            label="Event Date" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); dispatch(changeEventDateId(Date1)); }} selected={eventDateId}
+                            label="Event Date" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); props.dispatch(changeEventDateId(Date1)); }} selected={eventDateId}
                         />
                     </LocalizationProvider>
                 </Grid>
                 <Grid item={true} md={4}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker slotProps={{ textField: { size: 'small' } }} format="DD.MM.YYYY"
-                            label="Reminder" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); dispatch(changeReminderDateId(Date1)); }} selected={reminderDateId}
+                            label="Reminder" onChange={(newValue) => { var Date1 = props.formatDate2(newValue.$d); props.dispatch(changeReminderDateId(Date1)); }} selected={reminderDateId}
                         />
                     </LocalizationProvider>
                 </Grid>
                 <Grid item={true} md={8}>
-                    <TextField fullWidth variant="outlined" size="small" label="Content" onChange={(event) => { dispatch(changeCalendarContentId(event.target.value)); }} value={calendarContentId} />
+                    <TextField fullWidth variant="outlined" size="small" label="Content" onChange={(event) => { props.dispatch(changeCalendarContentId(event.target.value)); }} value={calendarContentId} />
                 </Grid>
             </Grid>
 
@@ -97,4 +95,4 @@ function SchedulerForm(props) {
         </Box>
     )
 }
-export default SchedulerForm
+export default SchedulerAddNewRecordForm

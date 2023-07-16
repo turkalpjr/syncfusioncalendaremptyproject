@@ -1,20 +1,23 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
 import { ScheduleComponent, ViewsDirective, ViewDirective, Day, Week, WorkWeek, Month, Agenda, Inject, Resize, DragAndDrop } from '@syncfusion/ej2-react-schedule';
 import { Dialog, DialogContent, DialogContentText, DialogTitle, Grid, Card, CardActions, CardContent, CardMedia, Typography, Button, Stack, TextField, MenuItem, Box } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import AddIcon from '@mui/icons-material/Add';
+
+
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DataManager, ODataV4Adaptor, Query } from '@syncfusion/ej2-data';
 import { useRef } from 'react';
 import axios from 'axios';
 
-import SchedulerForm from './SchedulerForm';
+import SchedulerForm from './SchedulerAddNewRecordForm';
+import SchedulerFilterForm from './SchedulerFilterForm';
+
 export const Scheduler = () => {
+    const dispatch = useDispatch()
     const [dialogOpen, setDialogOpen] = useState(false)
-    const handleStatusChange = (event) => {
-        setLeadStatus(event.target.value);
-    };
+
     const handleBackdropClick = () => {
         return false;
     };
@@ -22,8 +25,8 @@ export const Scheduler = () => {
 
     };
     const [leadStatuses, setLeadStatuses] = useState([]);
-    const [leadStatus, setLeadStatus] = useState([]);
-    const [operationType, setOperationType] = useState([])
+
+
     const PropertyPane = (props) => <div className="mt-5">{props.children}</div>;
     const formatDate = (d) => {
         var dd = d.getDate();
@@ -54,6 +57,7 @@ export const Scheduler = () => {
         return Token;
     }
 
+
     const FillStatuses = () => {
         const Token = ReturnToken();
         const instance = axios.create({
@@ -65,7 +69,6 @@ export const Scheduler = () => {
                 setLeadStatuses(response.data);
             })
     }
-
     const FillScheduler = () => {
         FillStatuses();
         const Token = ReturnToken();
@@ -153,49 +156,15 @@ export const Scheduler = () => {
             <Dialog onBackdropClick={handleBackdropClick} open={dialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Add new record..</DialogTitle>
                 <DialogContent>
-                    <SchedulerForm ReturnToken={ReturnToken} formatDate2={formatDate2} FillScheduler={FillScheduler} setDialogOpen={setDialogOpen} />
+                    <SchedulerForm useSelector={useSelector} dispatch={dispatch} ReturnToken={ReturnToken} formatDate2={formatDate2} FillScheduler={FillScheduler} setDialogOpen={setDialogOpen} />
                 </DialogContent>
             </Dialog>
+
             <Grid container display="flex" spacing={1} >
-                <Grid item={true} md={12}> <Box><TextField
-                    inputProps={{
-                        style: {
-                            height: "11px",
-                        },
-                    }}
-                    fullWidth label="Search" id="WeaseSchedulerSearchTextId" /></Box> </Grid>
 
-                <Grid item={true} md={2}>
-                    <Box  >
-                        <TextField
-                            size="small"
-                            SelectProps={{
-                                multiple: true
-                            }}
-                            label="Operation Types" select fullWidth value={operationType} onChange={(e) => setOperationType(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}>
-                            <MenuItem value="operation">Operation</MenuItem>
-                            <MenuItem value="meeting">Meeting</MenuItem>
-                        </TextField>
-                    </Box >
-                </Grid>
-
-                <Grid item={true} md={6}>
-                    <Box  >
-                        <TextField size="small"
-                            SelectProps={{
-                                multiple: true
-                            }}
-                            label="Statuses" select fullWidth value={leadStatus} onChange={handleStatusChange}>
-                            {leadStatuses?.map((data) => (
-                                <MenuItem key={data.id} value={data.id}>{data.name}</MenuItem>
-                            ))}
-                        </TextField>
-                    </Box >
-                </Grid>
-
-                <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button onClick={() => setDialogOpen(true)} color="success" size="small" variant='contained' startIcon={<AddIcon />}> Add Record</Button></Box>      </Grid>
-
-                <Grid item={true} md={2}  > <Box display="flex" justifyContent="flex-end"><Button onClick={updateFilters} size="small" variant='contained' startIcon={<RefreshIcon />}> Refresh Calendar</Button></Box>      </Grid>
+                <Grid item={true} md={12}>
+                    <SchedulerFilterForm useSelector={useSelector} dispatch={dispatch} useState={useState} ReturnToken={ReturnToken} updateFilters={updateFilters} setDialogOpen={setDialogOpen} leadStatuses={leadStatuses} />
+                </Grid >
 
 
                 <Grid item={true} md={12}>
