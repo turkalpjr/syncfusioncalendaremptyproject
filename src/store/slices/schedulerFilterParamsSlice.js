@@ -9,15 +9,12 @@ const filterFormSlice = createSlice({
     },
     reducers: {
         changeSearchTextId(state, action) {
-            debugger;
             state.searchTextId = action.payload;
         },
         changeOperationTypesId(state, action) {
-            debugger;
             state.operationTypesId = action.payload;
         },
         changeStatusesId(state, action) {
-            debugger;
             state.statusesId = action.payload;
         }
     },

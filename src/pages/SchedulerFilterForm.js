@@ -28,33 +28,22 @@ function SchedulerFilterForm(props) {
     });
     const handleSchedulerFilterSubmit = (e) => {
         e.preventDefault();
-        debugger;
-        let QueryString = "";
-        if (searchTextId != "") {
-            QueryString += "?searchTextId=" + searchTextId;
-        }
-
-        if (operationTypesId.length > 0) {
-            if (QueryString != "") {
-                QueryString += "&operationTypesId="
-            } else {
-                QueryString += "?operationTypesId=";
-            }
-            QueryString += JSON.stringify(operationTypesId);
-        }
-        if (statusesId.length > 0) {
-            if (QueryString != "") {
-                QueryString += "&statusesId="
-            } else {
-                QueryString += "?statusesId=";
-            }
-            QueryString += JSON.stringify(statusesId);
-        }
         var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
         var currentViewDates = schObj.getCurrentViewDates();
         var Start = formatDate(currentViewDates[0]);
         var End = formatDate(currentViewDates[currentViewDates.length - 1]);
-        QueryString += "?Start=" + Start + "&End=" + End;
+        let QueryString = "?Start=" + Start + "&End=" + End;
+        if (searchTextId != "") {
+            QueryString += "&searchTextId=" + searchTextId;
+        }
+        if (operationTypesId.length > 0) {
+            QueryString += "&operationTypesId="
+            QueryString += JSON.stringify(operationTypesId);
+        }
+        if (statusesId.length > 0) {
+            QueryString += "&statusesId="
+            QueryString += JSON.stringify(statusesId);
+        }
         var token = props.ReturnToken();
         axios({
             method: "get",
@@ -62,7 +51,6 @@ function SchedulerFilterForm(props) {
             headers: { "Authorization": `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
         })
             .then(function (response) {
-                debugger;
                 var schObj = document.getElementById("WeaseSchedulerId").ej2_instances[0];
                 schObj.eventSettings.dataSource = response.data;
             })
